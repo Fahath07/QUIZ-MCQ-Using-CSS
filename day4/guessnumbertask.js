@@ -1,105 +1,50 @@
-// File name: guessnumbertask.js
-// Put this file in the same folder as index.html and styles.css
+let againBtn = document.querySelector(".again");
+let number = document.querySelector(".number");
+let guess = document.querySelector(".guess");
+let checkBtn = document.querySelector(".check");
+let score = document.querySelector(".score");
+let highscore = document.querySelector(".highscore");
+let msg = document.querySelector(".message");
+let body = document.querySelector("body");
 
-(function () {
-  // cached DOM
-  const messageEl = document.getElementById('message');
-  const numberEl  = document.getElementById('number');
-  const scoreEl   = document.getElementById('score');
-  const highEl    = document.getElementById('highscore');
-  const guessInp  = document.getElementById('guessInput');
-  const checkBtn  = document.getElementById('check');
-  const againBtn  = document.getElementById('again');
+let randomNumber;
+function rand() {
+    randomNumber = Math.trunc(Math.random() * 20) + 1;
+}
 
-  // game state
-  let secretNumber;
-  let score;
-  let highscore = 0;
-  function randInt(min, max) {
-   
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
+rand();
+let scr = 20;
 
-  function setMessage(msg) {
-    messageEl.textContent = msg;
-  }
-
-  function updateScore(val) {
-    score = val;
-    scoreEl.textContent = score;
-  }
-
-  function revealNumber(n) {
-    numberEl.textContent = n;
-  }
-
-  function resetGame() {
-    secretNumber = randInt(1, 20);
-    updateScore(20);
-    setMessage('Start guessing...');
-    revealNumber('?');
-    guessInp.value = '';
-    guessInp.removeAttribute('disabled');
-    checkBtn.removeAttribute('disabled');
-    // For debugging you can uncomment:
-    // console.log('secret number:', secretNumber);
-  }
-
-  // main logic when user checks a guess
-  function onCheck() {
-    const raw = guessInp.value;
-    if (!raw) {
-      setMessage('Please enter a number!');
-      return;
+checkBtn.addEventListener("click", () => {
+    console.log(randomNumber);
+    if(guess.value == randomNumber) {
+        msg.textContent = "Correct!";
+        body.style.backgroundColor = "green";
+        number.textContent = randomNumber;
+        if(scr > Number(highscore.textContent))
+            highscore.textContent = scr;
     }
-
-    const guess = Number(raw);
-
-    if (!Number.isInteger(guess) || guess < 1 || guess > 20) {
-      setMessage('Enter an integer between 1 and 20.');
-      return;
+    if(guess.value < randomNumber) {
+        msg.textContent = "Too Low";
+        scr = scr - 1;
+        score.textContent = scr;
     }
-
-    // correct
-    if (guess === secretNumber) {
-      setMessage('🎉 Correct Number!');
-      revealNumber(secretNumber);
-      // update highscore
-      if (score > highscore) {
-        highscore = score;
-        highEl.textContent = highscore;
-      }
-      // disable further guessing until "Again"
-      guessInp.setAttribute('disabled', 'true');
-      checkBtn.setAttribute('disabled', 'true');
-      return;
+    if(guess.value > randomNumber) {
+        msg.textContent = "Too High";
+        scr = scr - 1;
+        score.textContent = scr;
     }
-
-    // wrong guess
-    if (score > 1) {
-      setMessage(guess > secretNumber ? '📈 Too high!' : '📉 Too low!');
-      updateScore(score - 1);
-    } else {
-      setMessage('💥 You lost the game!');
-      updateScore(0);
-      revealNumber(secretNumber);
-      guessInp.setAttribute('disabled', 'true');
-      checkBtn.setAttribute('disabled', 'true');
+    if(guess.value < 1 || guess.value > 20) {
+        msg.textContent = "Invalid guess";
     }
-  }
+});
 
-  // wire events
-  checkBtn.addEventListener('click', onCheck);
-
-  // allow Enter key to submit
-  guessInp.addEventListener('keydown', function (e) {
-    if (e.key === 'Enter') {
-      onCheck();
-    }
-  });
-
-  againBtn.addEventListener('click', resetGame);
-
-  // init
-  resetGame();
-})();
+againBtn.addEventListener("click", () => {
+    scr = 20;
+    msg.textContent = "Start guessing...";
+    score.textContent = scr;
+    number.textContent = "?";
+    body.style.backgroundColor = "black";
+    guess.value = 0;
+    rand();
+});

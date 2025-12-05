@@ -25,3 +25,17 @@ console.log(sel);
 let d=document.querySelectorAll("hi");
 //NodeList Array
 console.log(d[0]);
+
+//read and write operation
+let head=document.querySelector("p");
+//read operation
+console.log(head.textContent);
+
+//Write Opeation
+head.textContent="This is the new text Content.";
+let div=document.querySelector("div");
+div.innerHTML="<p>hello from PARA</p>";
+//div.textContent="<p>Hello From PARA</p>;
+console.log(div.textContent);
+
+console.log(div.innerHTML);
